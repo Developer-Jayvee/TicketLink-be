@@ -1,5 +1,5 @@
 import { prisma_client } from "../config/prisma"
-import type { PayloadPostInterface, PayloadUserInterface, PayloadUserType } from "../types/PayloadTypes"
+import type { PayloadMessageInterface, PayloadUserInterface, PayloadUserType } from "../types/PayloadTypes"
 
 
 export const UserQuery = {
@@ -17,12 +17,22 @@ export const UserQuery = {
     }
 
 }
+export const DepartmentQuery = {
 
-export const PostQuery = {
-    create : async (payload: PayloadPostInterface) => {
-        const response = await prisma_client.post.create({
+}
+
+export const ChannelQuery = {
+
+}
+
+
+export const MessageQuery = {
+    create : async (payload: PayloadMessageInterface) => {
+        const response = await prisma_client.message.create({
             data: payload
         })
-        return response
+        return response;
     }
 }
+
+

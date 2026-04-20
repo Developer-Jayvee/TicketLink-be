@@ -52,11 +52,13 @@ router.post('/login', async (req, res) => {
 
 router.post("/register" , async (req,res) => {
     try {
-        const { name , email, password } = req.body;
+        const { first_name , last_name , username , age  , email, password } = req.body;
         const salt = await bcrypt.genSalt(10)
         const response = await UserQuery.create({
-            name:name,
-            age:26,
+            first_name:first_name,
+            last_name: last_name,
+            username:username,
+            age:age,
             password: await bcrypt.hash(password,salt),
             email:email,
             role:"ADMIN"

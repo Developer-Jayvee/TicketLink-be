@@ -35,21 +35,4 @@ const initializeServers = async () => {
 };
 
 
-
-
-app.post("/testDB", async (req, res) => {
-  const { name } = req.body;
-
-  try {
-    const insertQuery = "INSERT INTO users ( name ) VALUES ($1)";
-    const result = await pool.query(insertQuery, [name]);
-
-    res.json({ msg: "Success" });
-  } catch (error) {
-    res.status(500).json({ msg: error });
-  }
-});
-
-
-
 initializeServers();
