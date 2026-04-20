@@ -1,0 +1,19 @@
+
+POST http://localhost:8002/login
+Content-Type: application/json
+
+{
+    "username" : "jayvee",
+    "password" : "asd"
+}
+
+###
+
+
+POST http://localhost:8002/check
+Content-Type: application/json
+
+{
+    "username" : "jayvee",
+    "password" : "asd"
+}
