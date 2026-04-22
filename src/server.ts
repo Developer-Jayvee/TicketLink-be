@@ -2,10 +2,8 @@ import "dotenv/config";
 import express from "express";
 import { createServer } from "http";
 import { pool } from "./config/db";
-import initiateSocket from "./config/socket_server";
-import { UserQuery } from "./utils/query_handler";
-import bcrypt from "bcrypt";
-import AuthRoutes from "./routes/auth-routes";
+import socket_server from "./config/socket_server";
+import initializeSocket from "./utils/socket-handler";
 
 const app = express();
 const httpServer = createServer(app);
@@ -24,8 +22,8 @@ const initializeServers = async () => {
 
     await pool.query('SELECT 1');
 
-    initiateSocket(httpServer)
-
+    const io = socket_server(httpServer)
+    initializeSocket(io);
     httpServer.listen(port, () => {
       console.log(`Listening to port ${port}`);
     });

@@ -32,3 +32,8 @@ export interface PayloadDepartmentInterface {
     description : string;
 }
 export type PayloadUserType = string;
+
+export interface PayloadGroupChatInterface {
+    name : string;
+    description : string;
+}

@@ -82,7 +82,7 @@ router.post("/register" , async (req,res) => {
 
 
 function generateToken(user : PayloadUserInterface){
-    return jwt.sign(user,process.env.ACCESS_TOKEN_SECRET as string,{expiresIn:'15s'});
+    return jwt.sign(user,process.env.ACCESS_TOKEN_SECRET as string);
 }
 function generateRefreshToken(user: PayloadUserInterface){
     return jwt.sign(user,process.env.REFRESH_ACCESS_TOKEN as string);
