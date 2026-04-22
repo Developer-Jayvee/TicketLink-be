@@ -1,5 +1,5 @@
 import { prisma_client } from "../config/prisma"
-import type { PayloadMessageInterface, PayloadUserInterface, PayloadUserType } from "../types/PayloadTypes"
+import type { PayloadGroupChatInterface, PayloadMessageInterface, PayloadUserInterface, PayloadUserType } from "../types/PayloadTypes"
 
 
 export const UserQuery = {
@@ -25,6 +25,16 @@ export const ChannelQuery = {
 
 }
 
+export const GroupQuery = {
+    create : async (payload : PayloadGroupChatInterface) => {
+        const response = await prisma_client.groupChat.create({
+            data: payload
+        });
+        return response;
+    },
+    all : async () => await prisma_client.groupChat.findMany(),
+    findFirst : async (groupID : string) => await prisma_client.groupChat.findFirst({ where : { id : groupID }})
+}
 
 export const MessageQuery = {
     create : async (payload: PayloadMessageInterface) => {

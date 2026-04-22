@@ -1,42 +1,54 @@
 import { Server } from "socket.io";
+import { MessageQuery } from "./query_handler";
 
-declare module 'socket.io'{
+declare module "socket.io" {
   interface Socket {
-    currentRoom : string;
+    currentChannel: string;
   }
 }
 export default function initializeSocket(io: Server) {
   io.on("connection", (socket) => {
-    console.log('connected');
-    
-    // setup the currentRoom
-    socket.on("join-room",(roomID) => {
-      
-      if(socket.currentRoom){
-        socket.leave(socket.currentRoom);
-        console.log('Leaved Room...');
-        
+
+    console.log("connected");
+
+    socket.on("join-channel", (channel_id) => {
+
+      if (socket.currentChannel) {
+        socket.leave(socket.currentChannel);
+
+        console.log("Leaved Channel...");
       }
 
-      socket.join(roomID);
-      socket.currentRoom = roomID;
-      console.log(`User joined ${roomID}`);
-      
-    })
 
-    socket.on('send-message' , (data) => {
-      console.log(JSON.stringify(data));
+      socket.join(channel_id);
+      socket.currentChannel = channel_id;
+      console.log(`User joined ${channel_id}`);
+
+
+    });
+
+    socket.on("send-message", async (data) => {
+
+      const channel_id = socket.currentChannel;
+
+      socket.to(channel_id).emit("channel-message", {
+        message: data.message,
+        user: data.user,
+      });
+
+      console.log(socket.currentChannel);
       
-      const roomId = socket.currentRoom;
-      
-      socket.to(roomId).emit("room-message",{
-        message : data.message,
-        user : data.user
+      await MessageQuery.create({
+        message:data.message,
+        user_id:data.user.id,
+        channel_id:socket.currentChannel
       })
 
-    })
+    });
+    
     socket.on("disconnect", () => {
       console.log("Disconnecting socket....");
     });
   });
+
 }
