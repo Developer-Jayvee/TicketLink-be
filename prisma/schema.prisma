@@ -13,39 +13,132 @@ datasource db {
 }
 
 model User {
-  id    Int    @id @default(autoincrement())
-  name  String
-  password String 
-  age Int
-  role Role @default(BASIC)
-  email String @unique
-  posts Post[]
-  favAuthor Post[] @relation("FavAuthor")
+  id         String       @id @default(uuid())
+  first_name String
+  last_name  String
+  password   String
+  age        Int
+  role       Role      @default(BASIC)
+  username   String    @unique
+  email      String    @unique
+  message    Message[]
 
-  @@unique([name,age])
-  @@index([email])
+  channel Channel[]
+  ticket    Ticket[] @relation("UserTickets")
+  createdBy Ticket[] @relation("CreatedTickets")
+
+  @@index([username, email])
 }
 
-model Post {
-  id        Int      @id @default(autoincrement())
-  title     String
-  rating    BigInt
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  author    User     @relation(fields: [userId], references: [id])
-  userId    Int
-  favAuthor User? @relation("FavAuthor", fields: [favID], references: [id])
-  favID Int?
-  categories Category[]
+model Ticket {
+  id          String      @id @default(uuid())
+  title       String
+  description String
+  status      Status
+  priority    Priority
+  due_date    DateTime
+
+  assignee_user_id   String?
+  created_by_user_id String
+  department_id      String
+  source_channel_id  String
+
+  updated_at DateTime @updatedAt
+  created_at DateTime @default(now())
+
+  assignee       User?      @relation("UserTickets", fields: [assignee_user_id], references: [id])
+  created_by     User       @relation("CreatedTickets", fields: [created_by_user_id], references: [id])
+  department     Department @relation(fields: [department_id], references: [id])
+  source_channel Channel    @relation(fields: [source_channel_id], references: [id])
 }
 
-model Category {
-  id Int @id @default(autoincrement())
-  name String @unique
-  posts Post[]
+model Department {
+  id          String       @id @default(uuid())
+  name        String
+  description String
+  channel     Channel[]
+  message     Message[]
+  ticket      Ticket[]
+}
+
+model GroupChat {
+  id          String       @id @default(uuid())
+  name        String
+  description String
+  channel     Channel[]
+}
+
+model Channel {
+  id            String        @id @default(uuid())
+  name          String     @unique
+  department    Department @relation(fields: [department_id], references: [id])
+  department_id String
+  group_chat_id String
+  created_by_id String
+
+
+  createdBy User @relation(fields: [created_by_id],references: [id])
+  groupChat    GroupChat      @relation(fields: [group_chat_id], references: [id])
+  conversation Conversation[]
+  ticket       Ticket[]
+  // message      Message[]
+}
+
+model Conversation {
+  id         String       @id @default(uuid())
+  name       String    @unique
+  channel_id String
+  channel    Channel?   @relation(fields: [channel_id], references: [id])
+  message    Message[]
+}
+
+model Message {
+  id              String    @id @default(uuid())
+  user_id         String 
+  message         String
+  channel_id      String
+  
+  conversation_id String?
+  department_id   String?
+
+  // channel      Channel       @relation(fields: [channel_id], references: [id])
+  department   Department?   @relation(fields: [department_id], references: [id])
+  conversation Conversation? @relation(fields: [conversation_id], references: [id])
+  user         User          @relation(fields: [user_id], references: [id])
+}
+
+// model Post {
+//   id        Int      @id @default(autoincrement())
+//   title     String
+//   rating    BigInt
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+//   author    User     @relation(fields: [userId], references: [id])
+//   userId    Int
+//   favAuthor User? @relation("FavAuthor", fields: [favID], references: [id])
+//   favID Int?
+//   categories Category[]
+// }
+
+// model Category {
+//   id Int @id @default(autoincrement())
+//   name String @unique
+//   posts Post[]
+// }
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum Status {
+  OPEN
+  INPROGRESS
+  DONE
 }
 
 enum Role {
-  BASIC 
+  BASIC
   ADMIN
 }

@@ -37,13 +37,17 @@ router.post('/login', async (req, res) => {
     
     const userInfo : PayloadUserInterface | null = await UserQuery.findFirst(username);
 
-    if(!userInfo || !await bcrypt.compare(password,userInfo.password)) return res.sendStatus(401);
-    
+    if(!userInfo) return res.status(401).json({message: 'Invalid username'});
+
+    if(!await bcrypt.compare(password,userInfo.password)){
+        return res.status(401).json({ message : "Invalid Credentials"})
+    }
+
 
     const accessToken = generateToken(userInfo)
     const refreshToken = generateRefreshToken(userInfo);
     refreshTokens.push(refreshToken)
-    res.json({
+    return res.json({
         user: userInfo,
         access : accessToken,
         refresh : refreshToken
@@ -52,11 +56,13 @@ router.post('/login', async (req, res) => {
 
 router.post("/register" , async (req,res) => {
     try {
-        const { name , email, password } = req.body;
+        const { first_name , last_name , username , age  , email, password } = req.body;
         const salt = await bcrypt.genSalt(10)
         const response = await UserQuery.create({
-            name:name,
-            age:26,
+            first_name:first_name,
+            last_name: last_name,
+            username:username,
+            age:age,
             password: await bcrypt.hash(password,salt),
             email:email,
             role:"ADMIN"
