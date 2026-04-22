@@ -11,7 +11,7 @@ export const UserQuery = {
     },
     findFirst : async (username : PayloadUserType) => {
         const response = await prisma_client.user.findFirst({
-            where: { email : username },
+            where: { username : username },
         });
         return response;
     }

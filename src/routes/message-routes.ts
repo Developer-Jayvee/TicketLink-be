@@ -14,7 +14,7 @@ router.post("/message",AuthMiddleware, async (req,res) => {
         const response = await MessageQuery.create({
             user_id: id,
             message: message,
-            conversation_id: conversation_id,
+            channel_id: 0,
             department_id:null // temporary null
         }).then( (result) => {
             res.json({ message : 'Successfully saved.'});

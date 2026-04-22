@@ -10,15 +10,16 @@ export interface PayloadUserInterface {
     username: string;
 }
 export interface PayloadMessageInterface {
-    user_id : number;
+    user_id : string;
     message : string;
-    conversation_id : number;
-    department_id : number | null ;
+    channel_id : string;
+    conversation_id ?: string ;
+    department_id ?: string ;
 }
 
 export interface PayloadConversationInterface{
     name : string;
-    channel_id : number;
+    channel_id : string;
 }
 
 export interface PayloadChannelInterface {
