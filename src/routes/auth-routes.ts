@@ -1,7 +1,6 @@
 import express from "express"
 import jwt from "jsonwebtoken"
 import "dotenv/config"
-import AuthMiddleware from "../middlewares/AuthMiddleware"
 import bcrypt from 'bcrypt'
 import { UserQuery } from "../utils/query_handler"
 import { PayloadUserInterface } from "../types/PayloadTypes"
