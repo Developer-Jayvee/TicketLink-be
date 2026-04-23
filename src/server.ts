@@ -1,41 +1,23 @@
 import "dotenv/config";
 import express from "express";
 import { createServer } from "http";
-import { pool } from "./config/db";
-import socket_server from "./config/socket_server";
-import initializeSocket from "./utils/socket-handler";
 import GroupRoutes from './routes/securedRoutes';
 import { cors_config } from "./config/cors";
+import { initializeServers } from "./config/servers";
+import socket_server from "./config/socket_server";
+import initializeSocket from "./utils/socket-handler";
 
 const app = express();
 const httpServer = createServer(app);
 
-const port = process.env.PORT || 8002;
+const port = Number(process.env.PORT) || 8002;
 
 app.use(cors_config)
 app.use(express.json());
 app.use(GroupRoutes);
 
-const initializeServers = async () => {
-  try {
+const io = socket_server(httpServer);
+initializeSocket(io);
 
-    await pool.connect();
 
-    pool.on('connect', () => console.log('DB running...'));
-    pool.on('error', () => console.log('DB crash....'));
-
-    await pool.query('SELECT 1');
-
-    const io = socket_server(httpServer)
-
-    initializeSocket(io);
-
-    httpServer.listen(port, () => {
-      console.log(`Listening to port ${port}`);
-    });
-  } catch (error) {
-    console.log("Error running servers");
-  }
-};
-
-initializeServers();
+initializeServers(httpServer,port);
