@@ -5,18 +5,13 @@ import { pool } from "./config/db";
 import initiateSocket from "./config/socket_server";
 import AuthRoutes from "./routes/auth-routes";
 import cors from 'cors';
+import { cors_config } from "./config/cors";
 
 const app = express();
 const httpServer = createServer(app);
 
 const port = process.env.AUTH_SERVER || 8003;
-app.use(cors({
-  origin:'http://localhost:5173',
-  credentials:true,
-  methods:["POST","GET"],
-  allowedHeaders:['Content-Type','Authorization']
-}));
-
+app.use(cors_config);
 app.use(express.json());
 app.use(AuthRoutes) // FOR LOGIN 
 
