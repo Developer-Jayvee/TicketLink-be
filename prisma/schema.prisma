@@ -63,9 +63,10 @@ model Department {
 
 model GroupChat {
   id          String       @id @default(uuid())
-  name        String
+  name        String @unique
   description String
   channel     Channel[]
+
 }
 
 model Channel {

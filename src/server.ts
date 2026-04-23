@@ -4,13 +4,17 @@ import { createServer } from "http";
 import { pool } from "./config/db";
 import socket_server from "./config/socket_server";
 import initializeSocket from "./utils/socket-handler";
+import GroupRoutes from './routes/securedRoutes';
+import { cors_config } from "./config/cors";
 
 const app = express();
 const httpServer = createServer(app);
 
 const port = process.env.PORT || 8002;
 
+app.use(cors_config)
 app.use(express.json());
+app.use(GroupRoutes);
 
 const initializeServers = async () => {
   try {
@@ -23,7 +27,9 @@ const initializeServers = async () => {
     await pool.query('SELECT 1');
 
     const io = socket_server(httpServer)
+
     initializeSocket(io);
+
     httpServer.listen(port, () => {
       console.log(`Listening to port ${port}`);
     });
@@ -31,6 +37,5 @@ const initializeServers = async () => {
     console.log("Error running servers");
   }
 };
-
 
 initializeServers();

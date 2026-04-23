@@ -68,7 +68,7 @@ router.post("/register" , async (req,res) => {
             role:"ADMIN"
           })
           res.json({
-            username : email,
+            username : username,
             password : password
           });
           
